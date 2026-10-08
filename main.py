@@ -89,20 +89,19 @@ if __name__ == "__main__":
     import threading
     from http.server import HTTPServer, BaseHTTPRequestHandler
 
+    # 1. Renderのチェックをパスするための最小限のサーバー
     class SimpleHandler(BaseHTTPRequestHandler):
         def do_GET(self):
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(b"Bot is running!")
+            self.wfile.write(b"OK")
+        def log_message(self, format, *args):
+            pass  # 余計なログを出さないようにします
 
-    def run_web_server():
-        port = int(os.environ.get("PORT", 10000))
-        server = HTTPServer(("0.0.0.0", port), SimpleHandler)
-        server.serve_forever()
-
-    # 1. Webサーバーを別スレッドで起動（Render対策）
-    web_thread = threading.Thread(target=run_web_server, daemon=True)
-    web_thread.start()
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    server_thread.start()
 
     # 2. ボットBを別スレッドで起動
     def run_client_b():
