@@ -84,11 +84,17 @@ async def auto_start():
       )
       await channel.send(reply)
 
-async def main():
-    await asyncio.gather(
-        client_a.start(TOKEN_A),
-        client_b.start(TOKEN_B),
-    )
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    import threading
+
+    def run_client_b():
+        client_b.run(TOKEN_B)
+
+    # 別スレッドでボットBを動かします
+    thread = threading.Thread(target=run_client_b)
+    thread.daemon = True
+    thread.start()
+
+    # メインでボットAを動かします
+    client_a.run(TOKEN_A)
+
