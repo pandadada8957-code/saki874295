@@ -84,14 +84,11 @@ async def auto_start():
       )
       await channel.send(reply)
 
-
 async def main():
-  client_a.loop.create_task(auto_start())
-  await asyncio.gather(
-      client_a.start(TOKEN_A),
-      client_b.start(TOKEN_B),
-  )
-
+    await asyncio.gather(
+        client_a.start(TOKEN_A),
+        client_b.start(TOKEN_B),
+    )
 
 if __name__ == "__main__":
-  asyncio.run(main())
+    asyncio.run(main())
